@@ -8,15 +8,17 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-model = load_model('model.h5')
+model = load_model('MobileNetModelPCOS.h5')
 print('Model loaded. Check http://127.0.0.1:5000/')
 
 labels = {0: 'Healthy', 1: 'Infected'}
 
 
 def get_result(image_path):
-    img = load_img(image_path, target_size=(225, 225))
-    x = img_to_array(img)
+    image = load_img(image_path, target_size=(224, 224))
+    image = image.convert('RGB')
+    image = image.resize((224, 224))
+    x = img_to_array(image)
     x = x.astype('float32') / 255.
     x = np.expand_dims(x, axis=0)
     predictions = model.predict(x)[0]
